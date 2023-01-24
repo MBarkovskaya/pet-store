@@ -1,36 +1,27 @@
 package org.store.test.stepdefinition;
 
 import io.cucumber.java.After;
+import io.cucumber.java.AfterStep;
 import io.cucumber.java.Before;
 import io.cucumber.java.Scenario;
-import org.store.test.driver.DriverFactory;
-import org.store.test.driver.DriverHolder;
-import org.store.test.util.PropertyFileReader;
-
-import java.util.concurrent.TimeUnit;
+import org.store.test.AppManager;
 
 public class CommonDefinition {
 
     @Before
     public void setup() {
-        DriverHolder.setDriver(DriverFactory.getNewDriverInstance(PropertyFileReader.getProperty("browser")));
-        DriverHolder.getDriver().manage().window().maximize();
-        DriverHolder.getDriver().manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
-
+        AppManager.init();
     }
 
     @After
-    public void tearDown(Scenario scenario) {
-        try {
-            String screenshotName = scenario.getName().replaceAll(" ", "_");
-//            if (scenario.isFailed()) {
-//                TakesScreenshot ts = (TakesScreenshot) getDriver();
-//                byte[] screenshot = ts.getScreenshotAs(OutputType.BYTES);
-//                scenario.attach(screenshot, "img/png", screenshotName);
-//            }
-        } catch (Exception e) {
-            e.printStackTrace();
+    public void tearDown() {
+        AppManager.shutDown();
+    }
+
+    @AfterStep
+    public void afterStep(Scenario scenario) {
+        if (scenario.isFailed()) {
+            AppManager.attachScreenshot(scenario.getName().replaceAll(" ", "_"));
         }
-        DriverHolder.getDriver().quit();
     }
 }

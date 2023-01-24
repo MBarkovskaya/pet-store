@@ -1,16 +1,30 @@
 package org.store.test.pageobject;
 
+import org.openqa.selenium.WebDriver;
+import org.store.test.pageobject.element.HeaderElement;
+import org.store.test.pageobject.element.HomePageElement;
 import org.store.test.util.PropertyFileReader;
 
-import static org.store.test.driver.DriverHolder.getDriver;
-import static org.store.test.pageobject.BaseMethods.scrollDownToElementAndClick;
+public class HomePage extends HeaderElement {
+    private HomePageElement element;
 
-public class HomePage {
+    public HomePage(WebDriver webDriver) {
+        super(webDriver);
+    }
+
     public void navigate() {
-        getDriver().navigate().to(PropertyFileReader.getProperty("siteurl"));
+        webDriver.navigate().to(PropertyFileReader.getProperty("siteurl"));
     }
 
     public void openProductListPage() {
-        scrollDownToElementAndClick(Page.homePageElement().shopCategoryHeadElement());
+        scrollDownToElementAndClick(element().shopCategoryHeadElement());
     }
+
+    public HomePageElement element() {
+        if (element == null) {
+            element = new HomePageElement(webDriver);
+        }
+        return element;
+    }
+
 }

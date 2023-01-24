@@ -1,20 +1,35 @@
 package org.store.test.pageobject;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.store.test.AppManager;
 import org.store.test.model.ItemsAndItemsNumberInCart;
 import org.store.test.model.ProductItem;
+import org.store.test.pageobject.element.HeaderElement;
+import org.store.test.pageobject.element.ProductListPageElement;
 
 import java.util.Comparator;
 import java.util.List;
 
-import static org.store.test.pageobject.BaseMethods.*;
-import static org.store.test.pageobject.Page.*;
+public class ProductListPage extends HeaderElement {
 
-public class ProductListPage {
+    private ProductListPageElement element;
+
+    public ProductListPage(WebDriver webDriver) {
+        super(webDriver);
+    }
+
+    public ProductListPageElement element() {
+        if (element == null) {
+            element = new ProductListPageElement(webDriver);
+        }
+        return element;
+    }
+
     public void selectProductCategory(String categoryId) {
-        clickOnElement(productListPageElement().selectCategoriesButton());
-        selectCheckboxCategory(productListPageElement().checkboxCategoryById(categoryId));
+        element().selectCategoriesButton().click();
+        selectCheckboxCategory(element().checkboxCategoryById(categoryId));
     }
 
     public void selectCheckboxCategory(WebElement element) {
@@ -26,36 +41,36 @@ public class ProductListPage {
     public ItemsAndItemsNumberInCart putProductListIntoTheBasket(List<ProductItem> list) {
         String cartItemsNumber;
         ItemsAndItemsNumberInCart itemsAndItemsNumberInCart = new ItemsAndItemsNumberInCart();
-        clickOnElement(productListPageElement().sortByFilter());
-        clickOnElement(productListPageElement().sortByHighToLow());
+        element().sortByFilter().click();
+        element().sortByHighToLow().click();
         for (ProductItem item:list) {
-            scrollDownToElementAndClick(productListPageElement().itemTitle(item.getPrice(), item.getName()));
+            scrollDownToElementAndClick(element().itemTitle(item.getPrice(), item.getName()));
             if (isPresent(By.cssSelector("span.out-of-stock"))) {
-                String textContent = headerElement().cartTitleElement().getAttribute("textContent").trim();
+                String textContent = cartTitleElement().getAttribute("textContent").trim();
                 cartItemsNumber = textContent.substring(0, textContent.indexOf(" "));
                 itemsAndItemsNumberInCart.setItemsNumber(cartItemsNumber);
-                itemPage().backToShopping();
+                AppManager.pm().itemPage().backToShopping();
             } else {
-                itemPage().addItemAndBackToShopping(item, itemsAndItemsNumberInCart);
+                AppManager.pm().itemPage().addItemAndBackToShopping(item, itemsAndItemsNumberInCart);
             }
         }
         return itemsAndItemsNumberInCart;
     }
 
-    public List<ProductItem> getLimitedAttributePriceListInDescendingOrder(List<WebElement> webElementsList, long number) {
-        return webElementsList.stream()
+    public List<ProductItem> getLimitedAttributePriceListInDescendingOrder(long number) {
+        return element.itemsList().stream()
                 .map(w -> new ProductItem(w.findElement(By.cssSelector("h3")).getAttribute("textContent").trim(),
                         w.findElement(By.cssSelector("h4")).getAttribute("textContent").trim()))
                 .sorted(Comparator.reverseOrder()).limit(number).toList();
     }
 
     public void openCartPage() {
-        clickOnElement(headerElement().cartTitleElement());
+        cartTitleElement().click();
     }
 
     public void searchForItem(String text) {
-        clickClearAndSendKey(productListPageElement().searchItemTextArea(), text);
-        clickOnElement(productListPageElement().searchItemButton());
+        clickClearAndSendKey(element().searchItemTextArea(), text);
+        element().searchItemButton().click();
     }
 
 }
