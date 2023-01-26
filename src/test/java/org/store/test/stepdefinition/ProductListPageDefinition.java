@@ -46,7 +46,7 @@ public class ProductListPageDefinition {
         SoftAssert softly = new SoftAssert();
 
         pm().productListPage().openCartPage();
-        Assertions.areResultTextsEquals(softly, getAttributeTextContent(pm().cartPageElement().proceedToCheckoutButton()),
+        Assertions.areResultTextsEquals(softly, getAttributeTextContent(pm().cartPage().element().proceedToCheckoutButton()),
                 "proceed to checkout");
         String cartText = getAttributeTextContent(pm().homePage().cartTitleElement()).trim();
         Assertions.areResultTextsEquals(softly, cartText.substring(0, cartText.indexOf(" ")),

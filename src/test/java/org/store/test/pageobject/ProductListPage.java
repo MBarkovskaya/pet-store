@@ -39,16 +39,13 @@ public class ProductListPage extends HeaderElement {
     }
 
     public ItemsAndItemsNumberInCart putProductListIntoTheBasket(List<ProductItem> list) {
-        String cartItemsNumber;
         ItemsAndItemsNumberInCart itemsAndItemsNumberInCart = new ItemsAndItemsNumberInCart();
         element().sortByFilter().click();
         element().sortByHighToLow().click();
         for (ProductItem item:list) {
             scrollDownToElementAndClick(element().itemTitle(item.getPrice(), item.getName()));
             if (isPresent(By.cssSelector("span.out-of-stock"))) {
-                String textContent = cartTitleElement().getAttribute("textContent").trim();
-                cartItemsNumber = textContent.substring(0, textContent.indexOf(" "));
-                itemsAndItemsNumberInCart.setItemsNumber(cartItemsNumber);
+                addItemsNumberToResultModel(itemsAndItemsNumberInCart);
                 AppManager.pm().itemPage().backToShopping();
             } else {
                 AppManager.pm().itemPage().addItemAndBackToShopping(item, itemsAndItemsNumberInCart);

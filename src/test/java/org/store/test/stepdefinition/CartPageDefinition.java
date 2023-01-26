@@ -20,7 +20,7 @@ public class CartPageDefinition {
     @And("User removes one of them from the basket and verifies the item is removed")
     public void userRemovesOneItemFromTheBasketAndChecksTheBasket() {
         List<ProductItem> productItemCartListBefore =
-                WebElementBase.getProductItemList(pm().cartPageElement().itemsList(), By.cssSelector("h2"), By.cssSelector("span.arial-font"));
+                WebElementBase.getProductItemList(pm().cartPage().element().itemsList(), By.cssSelector("h2"), By.cssSelector("span.arial-font"));
         ProductItem productItemToBeRemoved = productItemCartListBefore.get(0);
         pm().cartPage().removeItemFromCart(productItemToBeRemoved);
         pm().cartPage().actionsPause(1L);
@@ -43,9 +43,9 @@ public class CartPageDefinition {
         SoftAssert softly = new SoftAssert();
         isElementAbsentOnThePage(pm().cartPage(), softly, By.cssSelector("#add-cart-btn"));
         isElementOnThePage(pm().cartPage(), softly, By.cssSelector("#content_inner p"));
-        areResultTextsEquals(softly, getAttributeTextContent(pm().cartPageElement().youCartIsEmptyMessage()), message);
+        areResultTextsEquals(softly, getAttributeTextContent(pm().cartPage().element().youCartIsEmptyMessage()), message);
         areResultTextsEquals(softly,
-                getAttributeTextContent(pm().cartPageElement().continueShoppingButton()), buttonText);
+                getAttributeTextContent(pm().cartPage().element().continueShoppingButton()), buttonText);
         softly.assertAll();
     }
 }

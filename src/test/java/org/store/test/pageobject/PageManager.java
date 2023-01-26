@@ -12,7 +12,6 @@ public class PageManager {
     private ProductListPage productListPage;
 
     private CartPage cartPage;
-    private CartPageElement cartPageElement;
     private ItemPage itemPage;
 
     public PageManager(WebDriver webDriver) {
@@ -38,13 +37,6 @@ public class PageManager {
             cartPage = new CartPage(webDriver);
         }
         return cartPage;
-    }
-
-    public CartPageElement cartPageElement() {
-        if (cartPageElement == null) {
-            cartPageElement = new CartPageElement(webDriver);
-        }
-        return cartPageElement;
     }
 
     public ItemPage itemPage() {
